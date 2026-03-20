@@ -20,7 +20,6 @@ import { ActionButton } from "@/components/shared/ActionButton";
 import { BackButton } from "@/components/shared/BackButton";
 import { SummaryRow } from "@/components/shared/SummaryRow";
 
-// ── Bank lists ────────────────────────────────────────────────────────────────
 const LOCAL_BANKS = [
   { id: 'gcb',       name: 'GCB Bank',              code: 'GCB',  country: 'GH' },
   { id: 'absa',      name: 'Absa Bank Ghana',        code: 'ABSA', country: 'GH' },
@@ -33,17 +32,21 @@ const LOCAL_BANKS = [
 ];
 
 const INTERNATIONAL_BANKS = [
-  { id: 'chase',      name: 'JPMorgan Chase',         code: 'CHASE',  country: 'US', flag: '🇺🇸' },
-  { id: 'bofa',       name: 'Bank of America',        code: 'BOFA',   country: 'US', flag: '🇺🇸' },
-  { id: 'barclays',   name: 'Barclays Bank',          code: 'BARC',   country: 'GB', flag: '🇬🇧' },
-  { id: 'hsbc',       name: 'HSBC',                   code: 'HSBC',   country: 'GB', flag: '🇬🇧' },
-  { id: 'ubs',        name: 'UBS Switzerland',        code: 'UBS',    country: 'CH', flag: '🇨🇭' },
-  { id: 'deutschebank', name: 'Deutsche Bank',        code: 'DB',     country: 'DE', flag: '🇩🇪' },
-  { id: 'bnpparibas', name: 'BNP Paribas',           code: 'BNP',    country: 'FR', flag: '🇫🇷' },
-  { id: 'citibank',   name: 'Citibank',               code: 'CITI',   country: 'US', flag: '🇺🇸' },
-  { id: 'standardchartered', name: 'Standard Chartered', code: 'SCB', country: 'SG', flag: '🇸🇬' },
-  { id: 'nedbank',    name: 'Nedbank',                code: 'NED',    country: 'ZA', flag: '🇿🇦' },
+  { id: 'chase',             name: 'JPMorgan Chase',      code: 'CHASE', country: 'US', flag: '🇺🇸' },
+  { id: 'bofa',              name: 'Bank of America',     code: 'BOFA',  country: 'US', flag: '🇺🇸' },
+  { id: 'barclays',          name: 'Barclays Bank',       code: 'BARC',  country: 'GB', flag: '🇬🇧' },
+  { id: 'hsbc',              name: 'HSBC',                code: 'HSBC',  country: 'GB', flag: '🇬🇧' },
+  { id: 'ubs',               name: 'UBS Switzerland',     code: 'UBS',   country: 'CH', flag: '🇨🇭' },
+  { id: 'deutschebank',      name: 'Deutsche Bank',       code: 'DB',    country: 'DE', flag: '🇩🇪' },
+  { id: 'bnpparibas',        name: 'BNP Paribas',        code: 'BNP',   country: 'FR', flag: '🇫🇷' },
+  { id: 'citibank',          name: 'Citibank',            code: 'CITI',  country: 'US', flag: '🇺🇸' },
+  { id: 'standardchartered', name: 'Standard Chartered',  code: 'SCB',   country: 'SG', flag: '🇸🇬' },
+  { id: 'nedbank',           name: 'Nedbank',             code: 'NED',   country: 'ZA', flag: '🇿🇦' },
 ];
+
+type LocalBank         = typeof LOCAL_BANKS[number];
+type InternationalBank = typeof INTERNATIONAL_BANKS[number];
+type BankEntry         = LocalBank | InternationalBank;
 
 type TransferType = 'local' | 'international';
 type Step = 'from' | 'to' | 'amount' | 'confirm' | 'otp' | 'success';
@@ -64,6 +67,9 @@ interface RecipientInfo {
   bankCountry:   string;
 }
 
+const getBankLabel = (bank: BankEntry): string =>
+  'flag' in bank ? String(bank.flag) : bank.code.slice(0, 2);
+
 export default function PaymentTransfer() {
   const [accounts,      setAccounts]      = useState<Account[]>([]);
   const [step,          setStep]          = useState<Step>('from');
@@ -79,15 +85,14 @@ export default function PaymentTransfer() {
   const [note,          setNote]          = useState('');
   const [transferSpeed, setTransferSpeed] = useState<'instant' | 'standard'>('instant');
 
-  // OTP
   const [otpMethod,    setOtpMethod]    = useState<'sms' | 'email'>('sms');
   const [otpValues,    setOtpValues]    = useState<string[]>(Array(OTP_LENGTH).fill(''));
   const [otpSent,      setOtpSent]      = useState(false);
   const [otpError,     setOtpError]     = useState('');
   const [otpVerifying, setOtpVerifying] = useState(false);
   const [resendTimer,  setResendTimer]  = useState(0);
-  const otpRefs    = useRef<(HTMLInputElement | null)[]>([]);
-  const bankRef    = useRef<HTMLDivElement>(null);
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const bankRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const stored = getStoredAccounts();
@@ -101,7 +106,6 @@ export default function PaymentTransfer() {
     return () => clearTimeout(t);
   }, [resendTimer]);
 
-  // Close bank dropdown on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (bankRef.current && !bankRef.current.contains(e.target as Node)) setBankDropOpen(false);
@@ -115,7 +119,7 @@ export default function PaymentTransfer() {
   const fee          = transferType === 'international' ? INTL_FEE : (transferSpeed === 'instant' ? TRANSFER_FEE : 0);
   const totalAmount  = parsedAmount + fee;
 
-  const bankList     = transferType === 'local' ? LOCAL_BANKS : INTERNATIONAL_BANKS;
+  const bankList      = (transferType === 'local' ? LOCAL_BANKS : INTERNATIONAL_BANKS) as BankEntry[];
   const filteredBanks = bankList.filter(b =>
     b.name.toLowerCase().includes(bankSearch.toLowerCase()) ||
     b.code.toLowerCase().includes(bankSearch.toLowerCase())
@@ -238,7 +242,6 @@ export default function PaymentTransfer() {
 
   const maskedPhone = '+233 ** *** **89';
   const maskedEmail = 'ac***@gcbbank.com';
-
   const inputCls = "w-full px-4 py-3 border border-gray-200 rounded-xl transition-all text-sm text-gray-800 outline-none placeholder:text-gray-300 font-medium focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100";
 
   return (
@@ -259,7 +262,6 @@ export default function PaymentTransfer() {
 
         <AnimatePresence mode="wait" custom={1}>
 
-          {/* ── STEP 1: From ───────────────────────────────────────────────── */}
           {step === 'from' && (
             <motion.div key="from" custom={1} variants={slide} initial="enter" animate="center" exit="exit" transition={{ duration: 0.25 }}>
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
@@ -297,7 +299,6 @@ export default function PaymentTransfer() {
             </motion.div>
           )}
 
-          {/* ── STEP 2: To ─────────────────────────────────────────────────── */}
           {step === 'to' && (
             <motion.div key="to" custom={1} variants={slide} initial="enter" animate="center" exit="exit" transition={{ duration: 0.25 }}>
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
@@ -305,8 +306,6 @@ export default function PaymentTransfer() {
                   <h2 className="text-lg font-bold text-gray-900">Recipient Details</h2>
                   <p className="text-sm text-gray-500 mt-0.5">From: <span className="font-semibold text-gray-700">{selectedFrom?.name}</span></p>
                 </div>
-
-                {/* Local / International toggle */}
                 <div className="grid grid-cols-2 gap-2 p-1 rounded-xl" style={{ backgroundColor: '#f3f4f6' }}>
                   {(['local', 'international'] as TransferType[]).map(type => (
                     <button key={type} onClick={() => { setTransferType(type); setRecipient(r => ({ ...r, bankId: '', swiftCode: '', routingNumber: '' })); setBankSearch(''); }}
@@ -317,15 +316,12 @@ export default function PaymentTransfer() {
                     </button>
                   ))}
                 </div>
-
                 {transferType === 'international' && (
                   <div className="flex items-start gap-3 p-3 rounded-xl bg-amber-50 border border-amber-100">
                     <Globe className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />
                     <p className="text-xs text-amber-700">International wire transfers incur a <strong>${INTL_FEE.toFixed(2)}</strong> fee and may take 2–5 business days.</p>
                   </div>
                 )}
-
-                {/* Account Name */}
                 <div className="space-y-1.5">
                   <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide">Account Holder Name</label>
                   <div className="relative">
@@ -335,8 +331,6 @@ export default function PaymentTransfer() {
                       className={inputCls + ' pl-9'} />
                   </div>
                 </div>
-
-                {/* Account Number */}
                 <div className="space-y-1.5">
                   <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide">Account Number</label>
                   <div className="relative">
@@ -347,8 +341,6 @@ export default function PaymentTransfer() {
                       className={inputCls + ' pl-9 font-mono tracking-wider'} />
                   </div>
                 </div>
-
-                {/* Bank selector dropdown */}
                 <div className="space-y-1.5" ref={bankRef}>
                   <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide">
                     {transferType === 'local' ? 'Recipient Bank' : 'Recipient Bank (International)'}
@@ -361,7 +353,7 @@ export default function PaymentTransfer() {
                         <Building2 className="w-4 h-4 text-gray-400" />
                         {selectedBank ? (
                           <span className="font-semibold text-gray-800">
-                            {'flag' in selectedBank && String(selectedBank.flag)} {selectedBank.name}
+                            {getBankLabel(selectedBank)} {selectedBank.name}
                           </span>
                         ) : (
                           <span className="text-gray-300">Select a bank</span>
@@ -369,7 +361,6 @@ export default function PaymentTransfer() {
                       </div>
                       <ChevronDown className="w-4 h-4 text-gray-400" style={{ transform: bankDropOpen ? 'rotate(180deg)' : '', transition: 'transform 0.2s' }} />
                     </button>
-
                     <AnimatePresence>
                       {bankDropOpen && (
                         <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.15 }}
@@ -379,8 +370,7 @@ export default function PaymentTransfer() {
                               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                               <input type="text" placeholder="Search bank..." value={bankSearch}
                                 onChange={e => setBankSearch(e.target.value)}
-                                className="w-full pl-8 pr-3 py-2 text-xs border border-gray-200 rounded-lg outline-none focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100"
-                              />
+                                className="w-full pl-8 pr-3 py-2 text-xs border border-gray-200 rounded-lg outline-none focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100" />
                             </div>
                           </div>
                           <div className="max-h-52 overflow-y-auto">
@@ -392,7 +382,7 @@ export default function PaymentTransfer() {
                                 style={recipient.bankId === bank.id ? { backgroundColor: '#fffef0' } : {}}>
                                 <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold shrink-0"
                                   style={{ backgroundColor: '#f3f4f6', color: '#374151' }}>
-                                  {'flag' in bank ? bank.flag : bank.code.slice(0, 2)}
+                                  {getBankLabel(bank)}
                                 </div>
                                 <div>
                                   <p className="text-sm font-semibold text-gray-800">{bank.name}</p>
@@ -407,8 +397,6 @@ export default function PaymentTransfer() {
                     </AnimatePresence>
                   </div>
                 </div>
-
-                {/* International-only fields */}
                 {transferType === 'international' && (
                   <>
                     <div className="space-y-1.5">
@@ -426,7 +414,6 @@ export default function PaymentTransfer() {
                     </div>
                   </>
                 )}
-
                 <div className="pt-4 border-t flex gap-3">
                   <BackButton onClick={handleBack} />
                   <ActionButton onClick={handleContinue} disabled={!canContinue} label="Continue" />
@@ -435,7 +422,6 @@ export default function PaymentTransfer() {
             </motion.div>
           )}
 
-          {/* ── STEP 3: Amount ─────────────────────────────────────────────── */}
           {step === 'amount' && (
             <motion.div key="amount" custom={1} variants={slide} initial="enter" animate="center" exit="exit" transition={{ duration: 0.25 }}>
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
@@ -444,11 +430,10 @@ export default function PaymentTransfer() {
                   <p className="text-sm text-gray-500 mt-0.5 flex items-center gap-1">
                     {selectedFrom?.name} <ArrowRight className="w-3 h-3" /> {recipient.accountName}
                     <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded font-bold uppercase" style={{ backgroundColor: transferType === 'international' ? '#dbeafe' : '#dcfce7', color: transferType === 'international' ? '#1d4ed8' : '#16a34a' }}>
-                      {transferType === 'international' ? '🌐 Intl' : '📍 Local'}
+                      {transferType === 'international' ? 'Intl' : 'Local'}
                     </span>
                   </p>
                 </div>
-
                 <div className="space-y-2">
                   <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide">Amount (USD)</label>
                   <div className="relative">
@@ -456,23 +441,20 @@ export default function PaymentTransfer() {
                     <input type="number" step="0.01" min="0.01" placeholder="0.00" value={amount}
                       onChange={e => setAmount(e.target.value)}
                       className="w-full pl-12 pr-5 py-4 border rounded-xl transition-all text-2xl font-bold text-gray-900 outline-none focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100"
-                      style={{ borderColor: amountError ? '#fca5a5' : '#e5e7eb', backgroundColor: amountError ? '#fff5f5' : '#fff' }}
-                    />
+                      style={{ borderColor: amountError ? '#fca5a5' : '#e5e7eb', backgroundColor: amountError ? '#fff5f5' : '#fff' }} />
                   </div>
                   {amountError
                     ? <p className="text-xs text-red-500 flex items-center gap-1"><AlertCircle className="w-3 h-3" /> {amountError}</p>
                     : <p className="text-xs text-gray-400">Available: <span className="font-semibold text-gray-600">{formatAmount(selectedFrom?.currentBalance ?? 0)}</span></p>
                   }
                 </div>
-
-                {/* Speed (local only) */}
                 {transferType === 'local' && (
                   <div className="space-y-2">
                     <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide">Transfer Speed</label>
                     <div className="grid grid-cols-2 gap-3">
                       {[
-                        { key: 'instant',  label: 'Instant',  desc: 'Within seconds',    fee: `$${TRANSFER_FEE.toFixed(2)}`, icon: <Zap   className="w-4 h-4" /> },
-                        { key: 'standard', label: 'Standard', desc: '1–3 business days', fee: 'Free', icon: <Clock className="w-4 h-4" /> },
+                        { key: 'instant',  label: 'Instant',  desc: 'Within seconds',    fee: `$${TRANSFER_FEE.toFixed(2)}`, icon: <Zap className="w-4 h-4" /> },
+                        { key: 'standard', label: 'Standard', desc: '1–3 business days', fee: 'Free',                        icon: <Clock className="w-4 h-4" /> },
                       ].map(opt => {
                         const sel = transferSpeed === opt.key;
                         return (
@@ -488,21 +470,17 @@ export default function PaymentTransfer() {
                     </div>
                   </div>
                 )}
-
                 {transferType === 'international' && (
                   <div className="flex items-center justify-between py-2.5 px-4 rounded-xl" style={{ backgroundColor: '#fef3c7', border: '1px solid #f59e0b' }}>
                     <span className="text-xs font-semibold text-amber-700">International Wire Fee</span>
                     <span className="text-sm font-bold text-amber-800">${INTL_FEE.toFixed(2)}</span>
                   </div>
                 )}
-
                 <div className="space-y-2">
                   <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wide">Note (optional)</label>
                   <input type="text" placeholder="e.g. Rent payment, Investment transfer..." value={note} maxLength={80}
-                    onChange={e => setNote(e.target.value)}
-                    className={inputCls} />
+                    onChange={e => setNote(e.target.value)} className={inputCls} />
                 </div>
-
                 <div className="pt-4 border-t flex gap-3">
                   <BackButton onClick={handleBack} />
                   <ActionButton onClick={handleContinue} disabled={!canContinue} label="Review Transfer" />
@@ -511,7 +489,6 @@ export default function PaymentTransfer() {
             </motion.div>
           )}
 
-          {/* ── STEP 4: Confirm ────────────────────────────────────────────── */}
           {step === 'confirm' && (
             <motion.div key="confirm" custom={1} variants={slide} initial="enter" animate="center" exit="exit" transition={{ duration: 0.25 }}>
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
@@ -525,14 +502,14 @@ export default function PaymentTransfer() {
                 </div>
                 <div className="space-y-2">
                   {[
-                    { label: 'From',           value: `${selectedFrom?.name} · ${selectedFrom?.mask}` },
-                    { label: 'To',             value: recipient.accountName },
-                    { label: 'Account No.',    value: `****${recipient.accountNumber.slice(-4)}` },
-                    { label: 'Bank',           value: selectedBank?.name ?? '' },
-                    { label: 'Type',           value: transferType === 'international' ? 'International Wire' : 'Local Transfer' },
+                    { label: 'From',        value: `${selectedFrom?.name} · ${selectedFrom?.mask}` },
+                    { label: 'To',          value: recipient.accountName },
+                    { label: 'Account No.', value: `****${recipient.accountNumber.slice(-4)}` },
+                    { label: 'Bank',        value: selectedBank?.name ?? '' },
+                    { label: 'Type',        value: transferType === 'international' ? 'International Wire' : 'Local Transfer' },
                     ...(transferType === 'international' && recipient.swiftCode ? [{ label: 'SWIFT', value: recipient.swiftCode }] : []),
                     ...(transferType === 'local' ? [{ label: 'Speed', value: transferSpeed === 'instant' ? 'Instant' : 'Standard (1–3 days)' }] : []),
-                    { label: 'Fee',            value: fee > 0 ? formatAmount(fee) : 'Free' },
+                    { label: 'Fee',         value: fee > 0 ? formatAmount(fee) : 'Free' },
                     ...(note ? [{ label: 'Note', value: note }] : []),
                   ].map(row => (
                     <div key={row.label} className="flex justify-between items-center py-2.5 px-4 bg-gray-50 rounded-xl">
@@ -557,7 +534,6 @@ export default function PaymentTransfer() {
             </motion.div>
           )}
 
-          {/* ── STEP 5: OTP ────────────────────────────────────────────────── */}
           {step === 'otp' && (
             <motion.div key="otp" custom={1} variants={slide} initial="enter" animate="center" exit="exit" transition={{ duration: 0.25 }}>
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
@@ -573,7 +549,6 @@ export default function PaymentTransfer() {
                   <ArrowRight className="w-4 h-4 text-gray-400" />
                   <span className="text-sm font-semibold text-gray-600">{recipient.accountName}</span>
                 </div>
-
                 {!otpSent ? (
                   <div className="space-y-4">
                     <p className="text-sm font-semibold text-gray-700 text-center">Choose how to receive your OTP</p>
@@ -616,8 +591,7 @@ export default function PaymentTransfer() {
                           onChange={e => handleOtpInput(i, e.target.value)}
                           onKeyDown={e => handleOtpKeyDown(i, e)}
                           className="w-11 h-14 text-center text-xl font-bold rounded-xl border-2 outline-none transition-all"
-                          style={{ borderColor: otpError ? '#fca5a5' : val ? '#e6dc00' : '#e5e7eb', backgroundColor: otpError ? '#fff5f5' : val ? '#fffef0' : '#fff', color: '#1a1a1a' }}
-                        />
+                          style={{ borderColor: otpError ? '#fca5a5' : val ? '#e6dc00' : '#e5e7eb', backgroundColor: otpError ? '#fff5f5' : val ? '#fffef0' : '#fff', color: '#1a1a1a' }} />
                       ))}
                     </div>
                     {otpError && (
@@ -648,7 +622,6 @@ export default function PaymentTransfer() {
             </motion.div>
           )}
 
-          {/* ── STEP 6: Success ────────────────────────────────────────────── */}
           {step === 'success' && (
             <motion.div key="success" initial={{ opacity: 0, scale: 0.92, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ type: 'spring', stiffness: 280, damping: 22 }}>
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -665,12 +638,12 @@ export default function PaymentTransfer() {
                     <p className="text-xs text-gray-400 mt-1">sent to {recipient.accountName}</p>
                   </div>
                   {[
-                    { label: 'From',        value: `${selectedFrom?.name} · ${selectedFrom?.mask}` },
-                    { label: 'To',          value: `${recipient.accountName} · ****${recipient.accountNumber.slice(-4)}` },
-                    { label: 'Bank',        value: selectedBank?.name ?? '' },
-                    { label: 'Type',        value: transferType === 'international' ? '🌐 International Wire' : '📍 Local Transfer' },
-                    { label: 'Verified',    value: `✓ OTP via ${otpMethod === 'sms' ? 'SMS' : 'Email'}` },
-                    { label: 'Reference',   value: `TXN-${Date.now().toString(36).toUpperCase()}` },
+                    { label: 'From',      value: `${selectedFrom?.name} · ${selectedFrom?.mask}` },
+                    { label: 'To',        value: `${recipient.accountName} · ****${recipient.accountNumber.slice(-4)}` },
+                    { label: 'Bank',      value: selectedBank?.name ?? '' },
+                    { label: 'Type',      value: transferType === 'international' ? 'International Wire' : 'Local Transfer' },
+                    { label: 'Verified',  value: `OTP via ${otpMethod === 'sms' ? 'SMS' : 'Email'}` },
+                    { label: 'Reference', value: `TXN-${Date.now().toString(36).toUpperCase()}` },
                   ].map(row => (
                     <div key={row.label} className="flex justify-between items-center py-2 px-3 bg-gray-50 rounded-lg">
                       <span className="text-xs text-gray-400 font-medium">{row.label}</span>
