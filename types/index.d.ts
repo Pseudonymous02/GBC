@@ -20,8 +20,7 @@ declare type SignUpParams = {
   email: string;
   password: string;
 };
-
-declare type LoginUser = {
+export type LoginUser = {
   email: string;
   password: string;
 };
