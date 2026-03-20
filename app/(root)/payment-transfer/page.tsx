@@ -361,7 +361,7 @@ export default function PaymentTransfer() {
                         <Building2 className="w-4 h-4 text-gray-400" />
                         {selectedBank ? (
                           <span className="font-semibold text-gray-800">
-                            {'flag' in selectedBank && selectedBank.flag} {selectedBank.name}
+                            {'flag' in selectedBank && String(selectedBank.flag)} {selectedBank.name}
                           </span>
                         ) : (
                           <span className="text-gray-300">Select a bank</span>
