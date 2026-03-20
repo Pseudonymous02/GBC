@@ -87,7 +87,7 @@ export default function Home() {
             <h1 className="header-box-title">Dashboard</h1>
             {/* FIX 4: use dynamic user name */}
             <p className="text-16 text-gray-600 mt-2">
-              Welcome back, {userName}! Here's what's happening with your finances.
+              Welcome back, {userName}! Here&apos;s what&apos;s happening with your finances.
             </p>
           </div>
 
