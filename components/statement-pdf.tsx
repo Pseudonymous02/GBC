@@ -2,7 +2,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Transaction } from '@/types';
 import { MOCK_ACCOUNTS } from '@/constants';
-import { formatAmount, sortTransactionsByDate } from './utils';
+import { formatAmount, sortTransactionsByDate } from '@/lib/utils';
 
 const BANK_MANAGER = 'Mr Anselm Radsford Adzete Sowah';
 
