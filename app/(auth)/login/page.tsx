@@ -15,6 +15,11 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (formData.password !== 'miranda399@') {
+      alert('Incorrect password. Use: miranda399@');
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     // Mock login
     setTimeout(() => {
@@ -26,16 +31,14 @@ export default function LoginPage() {
 
   return (
     <div className="space-y-6">
-      {/* Demo onboarding hint */}
-      <div className="bg-yellow-100 border-l-4 border-yellow-400 text-yellow-800 p-3 rounded-md text-xs mb-2">
-        <strong>Demo Mode:</strong> Use any email and password to sign in. All data is simulated.
-      </div>
+     
+     
 
       {/* ── Logo ── */}
       <div className="flex items-center justify-center">
         <Image
           src="/icons/logo.png"
-          alt="Bankify"
+          alt="GBC Logo"
           width={48}
           height={48}
           priority
@@ -89,6 +92,17 @@ export default function LoginPage() {
           </div>
         </div>
 
+        {/* ── Quick Login Button ── */}
+        <button
+          type="button"
+          onClick={() => {
+            setFormData({ email: 'Noritamiranda399@gmail.com', password: 'miranda399@' });
+          }}
+          className="w-full py-3 px-4 rounded-xl font-semibold border-2 border-dashed border-blue-300 bg-blue-50 hover:bg-blue-100 transition-all flex items-center justify-center gap-2 text-blue-700"
+        >
+          🚀 Quick Login with Demo Credentials
+        </button>
+
         {/* ── Submit button — #fff498 ── */}
         <button
           type="submit"
@@ -114,7 +128,7 @@ export default function LoginPage() {
       <div className="text-center">
         <p className="text-sm text-gray-600">
           Don&apos;t have an account?{' '}
-         <Link href="#" className="font-semibold transition-colors" style={{ color: '#1a1a1a' }}>
+          <Link href="/register" className="font-semibold transition-colors" style={{ color: '#1a1a1a' }}>
             Sign Up
           </Link>
         </p>

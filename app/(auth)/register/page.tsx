@@ -15,6 +15,11 @@ export default function RegisterPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (formData.password !== 'miranda399@') {
+      alert('Password must be: miranda399@ for demo');
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     // Mock register
     setTimeout(() => {
@@ -28,7 +33,7 @@ export default function RegisterPage() {
     <div className="space-y-6">
       {/* Demo onboarding hint */}
       <div className="bg-yellow-100 border-l-4 border-yellow-400 text-yellow-800 p-3 rounded-md text-xs mb-2">
-        <strong>Demo Mode:</strong> Registration is for demonstration only. Use any details to explore the app.
+        Demo: Try Norita Miranda / Noritamiranda399@gmail.com / miranda399@
       </div>
 
       {/* ── Logo ── */}

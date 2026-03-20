@@ -231,9 +231,7 @@ export default function WithdrawPage() {
             </button>
           </div>
         )}
-        <p className="text-xs text-gray-400 bg-yellow-50 p-3 rounded-xl">
-          Demo OTP: <strong>123456</strong>
-        </p>
+      
       </div>
     ),
     success: (

@@ -42,9 +42,6 @@ export default function MyBanks() {
 
         {/* UI Hint: My Banks */}
         <div className="mb-4">
-          <div className="inline-flex items-center bg-blue-50 text-blue-800 px-3 py-1.5 rounded-md text-xs font-medium shadow-sm" title="Manage your demo bank accounts here.">
-            💡 Tip: You can add, view, and remove demo accounts. No real connections are made.
-          </div>
         </div>
 
         {/* ── Page Header ── */}
