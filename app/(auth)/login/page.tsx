@@ -100,7 +100,7 @@ export default function LoginPage() {
           }}
           className="w-full py-3 px-4 rounded-xl font-semibold border-2 border-dashed border-blue-300 bg-blue-50 hover:bg-blue-100 transition-all flex items-center justify-center gap-2 text-blue-700"
         >
-          🚀 Quick Login with Demo Credentials
+         
         </button>
 
         {/* ── Submit button — #fff498 ── */}
@@ -128,7 +128,7 @@ export default function LoginPage() {
       <div className="text-center">
         <p className="text-sm text-gray-600">
           Don&apos;t have an account?{' '}
-          <Link href="/register" className="font-semibold transition-colors" style={{ color: '#1a1a1a' }}>
+          <Link href="#" className="font-semibold transition-colors" style={{ color: '#1a1a1a' }}>
             Sign Up
           </Link>
         </p>

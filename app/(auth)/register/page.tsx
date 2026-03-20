@@ -33,7 +33,7 @@ export default function RegisterPage() {
     <div className="space-y-6">
       {/* Demo onboarding hint */}
       <div className="bg-yellow-100 border-l-4 border-yellow-400 text-yellow-800 p-3 rounded-md text-xs mb-2">
-        Demo: Try Norita Miranda / Noritamiranda399@gmail.com / miranda399@
+       
       </div>
 
       {/* ── Logo ── */}
