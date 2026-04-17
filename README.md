@@ -1,4 +1,4 @@
-# Obi — Personal Finance Dashboard
+# clear — Personal Finance Dashboard
 
 A modern, full-featured personal finance web application built with Next.js 14. Manage accounts, transfer funds, withdraw cash, and track transactions — all within a secure, responsive interface.
 
