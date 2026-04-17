@@ -57,7 +57,7 @@ const handleNext = () => {
 
   return (
     <div className="flex-1 min-h-screen">
-      <div className="p-8 space-y-8">
+      <div className="px-4 sm:px-6 lg:px-8 py-6 lg:py-8 space-y-4 sm:space-y-6 lg:space-y-8">
         {/* UI Hint: Transaction History */}
         <div className="mb-4">
           <div className="inline-flex items-center bg-blue-50 text-blue-800 px-3 py-1.5 rounded-md text-xs font-medium shadow-sm" title="View your demo transaction history.">
@@ -72,14 +72,14 @@ const handleNext = () => {
             <ChevronLeft className="w-6 h-6" />
           </Link>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Transaction History</h1>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">Transaction History</h1>
             <p className="text-gray-600 mt-2">Complete transaction records</p>
           </div>
         </motion.div>
 
         <div className="bg-white rounded-xl shadow-chart p-6">
           {/* Filter Buttons */}
-          <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 sm:gap-0 mb-6">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 capitalize">
                 {view === 'month' ? 'Last 30 days' : 'All Transactions'}
@@ -91,7 +91,7 @@ const handleNext = () => {
             <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
               <button 
                 onClick={() => handleViewChange('month')}
-                className={`px-4 py-2 rounded-md font-medium transition-all text-sm ${
+                className={`flex-1 px-6 sm:px-4 py-3 sm:py-2 min-h-[44px] rounded-md font-medium transition-all text-sm ${
                   view === 'month'
                     ? 'bg-white shadow-sm text-gray-900'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
@@ -101,7 +101,7 @@ const handleNext = () => {
               </button>
               <button 
                 onClick={() => handleViewChange('all')}
-                className={`px-4 py-2 rounded-md font-medium transition-all text-sm ${
+                className={`flex-1 px-6 sm:px-4 py-3 sm:py-2 min-h-[44px] rounded-md font-medium transition-all text-sm ${
                   view === 'all'
                     ? 'bg-white shadow-sm text-gray-900'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200'
@@ -109,10 +109,10 @@ const handleNext = () => {
               >
                 All time
               </button>
-             <button
+  <button
   onClick={() => downloadAccountStatement(filteredTxns, 'acc_1')}
   disabled={filteredTxns.length === 0}
-  className="px-4 py-2 bg-primary-600 text-white rounded-md font-medium text-sm hover:bg-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm ml-2"
+  className="px-6 sm:px-4 py-3 sm:py-2 min-h-[44px] bg-primary-600 text-white rounded-md font-medium text-sm hover:bg-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm ml-2"
 >
   Download PDF
 </button>
@@ -120,7 +120,7 @@ const handleNext = () => {
           </div>
 
           {/* Transactions List */}
-          <ul className="space-y-3 max-h-96 overflow-y-auto">
+          <ul className="space-y-3 max-h-[60vh] sm:max-h-[70vh] overflow-y-auto">
             {paginatedTxns.length > 0 ? (
               paginatedTxns.map((txn) => (
                 <TransactionItem key={txn.id} transaction={txn} />
@@ -136,7 +136,7 @@ const handleNext = () => {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="mt-8 pt-8 border-t border-gray-200 flex justify-between items-center">
+            <div className="mt-8 pt-8 border-t border-gray-200 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-2">
               <span className="text-sm text-gray-500">
                 Showing {(page - 1) * ITEMS_PER_PAGE + 1}-{Math.min(page * ITEMS_PER_PAGE, filteredTxns.length)} of {filteredTxns.length}
               </span>
@@ -144,7 +144,7 @@ const handleNext = () => {
                 <motion.button 
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="px-5 py-2.5 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium flex items-center gap-1 text-sm shadow-sm"
+                  className="px-6 sm:px-5 py-3 sm:py-2.5 min-h-[44px] rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium flex items-center gap-1 text-sm shadow-sm"
                   disabled={page === 1}
                   onClick={handlePrevious}
                 >
@@ -157,7 +157,7 @@ const handleNext = () => {
                 <motion.button 
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="px-5 py-2.5 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium flex items-center gap-1 text-sm shadow-sm"
+                  className="px-6 sm:px-5 py-3 sm:py-2.5 min-h-[44px] rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium flex items-center gap-1 text-sm shadow-sm"
                   disabled={page === totalPages}
                   onClick={handleNext}
                 >
